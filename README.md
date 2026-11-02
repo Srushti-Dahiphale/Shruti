@@ -11,6 +11,10 @@ Scan → Understand → Act. Helps users understand paperwork and check medicine
 
 ---
 
+##Deployed on Vercel
+https://shruti-teal.vercel.app/
+
+---
 ## Quickstart in Antigravity IDE
 
 ### 1. Configure Environment (`.env`)
