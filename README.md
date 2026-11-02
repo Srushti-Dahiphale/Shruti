@@ -11,7 +11,8 @@ Scan → Understand → Act. Helps users understand paperwork and check medicine
 
 ---
 
-##Deployed on Vercel
+# Deployed on Vercel
+
 https://shruti-teal.vercel.app/
 
 ---
