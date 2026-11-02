@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2ece0">
+<link rel="icon" href="/shruti-logo.jpg">
+<title>Shruti — सहायक</title>
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — matching the attached UI
+   Palette: Cream bg · Dark-Navy cards · Rose-gold accent
+══════════════════════════════════════════════ */
+:root {
+  /* Rose-gold (Shruti logo colours) */
+  --rose:    #c08090;   /* primary accent — rose-mauve */
+  --rose2:   #d4a0aa;   /* lighter rose */
+  --rose3:   #f5e8eb;   /* rose tint surface */
+  --rose-dk: #8a4a5a;   /* deep rose */
+
+  /* Dark navy (cards, nav, toggles from UI) */
+  --navy:    #1d2245;   /* card dark surface */
+  --navy2:   #252c58;   /* navy lighter */
+  --navy3:   #141828;   /* nav/footer darkest */
+
+  /* Cream (page background from UI) */
+  --cream:   #f2ece0;   /* warm cream — main bg */
+  --cream2:  #e8e2d6;   /* slightly darker cream */
+  --cream3:  #fdfaf6;   /* near-white highlight */
+
+  /* Text */
+  --ink:     #1a1a2e;   /* dark text on cream */
+  --ink2:    #5a556a;   /* muted text on cream */
+  --ink-lt:  #f2ece0;   /* light text on navy */
+  --ink-lt2: #a0a8c8;   /* muted on navy */
+  --line:    #ddd6c8;   /* dividers on cream */
+  --line-dk: #2e3560;   /* dividers on navy */
+
+  /* Status */
+  --err:     #8a2020;
+  --err-bg:  #fef2f2;
+  --ok:      #166534;
+  --ok-bg:   #dcfce7;
+
+  /* Shadows */
+  --sh:   0 2px 14px rgba(26,26,46,.10);
+  --sh2:  0 6px 28px rgba(26,26,46,.18);
+  --sh-dk: 0 4px 20px rgba(0,0,0,.35);
+
+  /* Sizing */
+  --fs:  17px;
+  --tap: 52px;
+  --r:   20px;
+  --r2:  14px;
+}
+
+/* Accessibility overrides */
+body.large { --fs: 21px; --tap: 64px; }
+body.hc {
+  --cream: #ffffff; --cream2: #f0f0f0;
+  --ink: #000; --navy: #000820;
+  --rose: #8a2040; --rose2: #b04060;
+}
+
+/* ══════════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+  font-size: var(--fs); line-height: 1.5;
+  background: var(--cream);
+  color: var(--ink);
+  display: flex; flex-direction: column;
+  max-width: 480px; margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* ══════════════════════════════════════════════
+   HEADER  — cream background, dark text (matches UI reference)
+══════════════════════════════════════════════ */
+#hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: max(env(safe-area-inset-top),12px) 16px 10px;
+  background: var(--cream3);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 1px 8px rgba(26,26,46,.08);
+}
+.hdr-logo {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+/* The actual Shruti logo image */
+.hdr-logo img {
+  width: 44px; height: 44px;
+  object-fit: contain;
+  border-radius: 10px;
+  /* Strip the dark background from the logo image */
+  mix-blend-mode: multiply;
+  filter: contrast(1.1);
+}
+.hdr-logo .brand-name {
+  font-family: Georgia, "Palatino Linotype", serif;
+  font-size: 1.35em; font-weight: 700;
+  letter-spacing: .5px;
+  /* Rose-gold text gradient matching logo */
+  background: linear-gradient(135deg, #c49090 0%, #8a4050 40%, #c49090 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hdr-logo .sub {
+  font-size: .62em; color: var(--ink2);
+  margin-top: -2px; display: block;
+  -webkit-text-fill-color: var(--ink2);
+}
+.hdr-acts { display: flex; gap: 8px; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 0;
+  background: var(--cream2); color: var(--ink);
+  font-size: 1.1em; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s; box-shadow: var(--sh);
+}
+.icon-btn:hover { background: var(--rose3); }
+.icon-btn.muted { opacity: .45; }
+
+/* ══════════════════════════════════════════════
+   MAIN SCROLL AREA
+══════════════════════════════════════════════ */
+#app {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 0 14px 24px;
+  -webkit-overflow-scrolling: touch;
+  background: var(--cream);
+}
+
+/* ══════════════════════════════════════════════
+   BOTTOM NAV  — dark navy, cream icons (matches UI)
+══════════════════════════════════════════════ */
+#nav {
+  display: flex;
+  background: var(--navy3);
+  border-top: 1px solid var(--line-dk);
+  padding-bottom: max(env(safe-area-inset-bottom),4px);
+  position: sticky; bottom: 0; z-index: 200;
+}
+#nav button {
+  flex: 1; border: 0; background: transparent;
+  color: var(--ink-lt2); cursor: pointer;
+  font-size: .6em; font-weight: 500;
+  padding: 6px 2px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+  min-height: 58px; transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+#nav button .ni { font-size: 1.55em; line-height: 1; }
+#nav button.on { color: var(--rose2); }
+#nav button.on .ni-wrap {
+  background: rgba(192,128,144,.18);
+  border-radius: 14px; padding: 3px 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+
+/* ══════════════════════════════════════════════
+   CARDS  — two types: cream (light) and navy (dark)
+══════════════════════════════════════════════ */
+.card {
+  background: var(--cream3);
+  border-radius: var(--r);
+  padding: 16px; margin: 10px 0;
+  box-shadow: var(--sh);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+/* Dark navy card (Adaptive Setup style from UI) */
+.card.dk {
+  background: var(--navy);
+  border-color: var(--line-dk);
+  color: var(--ink-lt);
+  box-shadow: var(--sh-dk);
+}
+/* Rose accent card */
+.card.rose {
+  background: var(--rose3);
+  border-color: var(--rose2);
+  color: var(--ink);
+}
+.card.err   { background: var(--err-bg); border-color: var(--err); color: var(--err); }
+.card.inner { background: var(--cream2); border-radius: var(--r2); padding: 12px; border: 1px solid var(--line); }
+.card.amber { background: #fdf3e5; border: 1.5px solid #d97706; color: var(--ink); }
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: var(--tap); padding: 0 20px;
+  border-radius: var(--r2); border: 2px solid var(--rose);
+  background: var(--rose); color: #fff;
+  font: inherit; font-size: var(--fs); font-weight: 700;
+  cursor: pointer; transition: opacity .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.97); opacity: .9; }
+.btn.o   { background: transparent; color: var(--rose); }
+.btn.dk  { background: var(--navy); border-color: var(--navy); color: var(--ink-lt); }
+.btn.dk.o { background: transparent; color: var(--navy); border-color: var(--navy); }
+.btn.sm  { min-height: 36px; padding: 0 14px; font-size: .82em; }
+.btn.full { width: 100%; }
+.btn.pill { border-radius: 99px; }  /* pill style like UI reference */
+
+/* Rose-gold pill buttons (Explain / Action Steps from reference) */
+.btn.pill-rose {
+  background: linear-gradient(135deg, var(--rose2) 0%, var(--rose) 60%, var(--rose-dk) 100%);
+  border: none; color: #fff; border-radius: 99px;
+  min-height: 38px; padding: 0 18px; font-size: .88em;
+}
+
+/* Big scan orb button (matching the reference's pink gradient ball) */
+.scan-orb {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%,
+    #e8b0bc 0%, #c08090 35%, #8a4a5a 75%, #5a2030 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 1.9em; cursor: pointer; margin: 12px auto;
+  box-shadow:
+    0 8px 28px rgba(192,128,144,.55),
+    0 0 0 8px rgba(192,128,144,.15),
+    inset 0 2px 8px rgba(255,255,255,.25);
+  border: 0; color: #fff;
+  transition: transform .15s, box-shadow .15s;
+}
+.scan-orb:active { transform: scale(.93); }
+.scan-orb span { font-size: .32em; font-weight: 700; margin-top: 2px; letter-spacing: .04em; }
+
+/* ══════════════════════════════════════════════
+   ACTION GRID (Home)
+══════════════════════════════════════════════ */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0; }
+.action-card {
+  border-radius: var(--r); padding: 16px 12px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  cursor: pointer; min-height: 100px;
+  transition: transform .12s, box-shadow .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.action-card:active { transform: scale(.96); }
+/* Navy dark action card (Scan paper style) */
+.action-card.dk {
+  background: var(--navy);
+  color: var(--ink-lt);
+  box-shadow: var(--sh-dk);
+}
+/* Rose action card (Medicine) */
+.action-card.rose-card {
+  background: linear-gradient(145deg, #8a3a4a 0%, #c08090 100%);
+  color: #fff; box-shadow: 0 4px 18px rgba(192,128,144,.4);
+}
+.ac-icon  { font-size: 1.8em; }
+.ac-title { font-weight: 800; font-size: .95em; }
+.ac-sub   { font-size: .72em; opacity: .78; }
+
+/* ══════════════════════════════════════════════
+   SECTION HEADER
+══════════════════════════════════════════════ */
+.sec { display: flex; justify-content: space-between; align-items: center; margin: 18px 0 6px; }
+.sec h2 { font-size: 1em; font-weight: 800; color: var(--ink); }
+.sec a  { font-size: .82em; color: var(--rose); font-weight: 600; cursor: pointer; }
+h2.page { font-size: 1.15em; font-weight: 900; margin: 14px 0 8px; color: var(--ink); }
+
+/* ══════════════════════════════════════════════
+   LINE CHART (SVG)
+══════════════════════════════════════════════ */
+.chart-wrap {
+  background: var(--navy); border-radius: var(--r);
+  padding: 14px 16px; margin: 10px 0;
+  box-shadow: var(--sh-dk); color: var(--ink-lt);
+}
+.chart-title { font-weight: 800; font-size: .92em; margin-bottom: 8px; color: var(--ink-lt); }
+.chart-legend { display: flex; gap: 14px; font-size: .72em; margin-top: 6px; color: var(--ink-lt2); }
+.chart-legend span { display: flex; align-items: center; gap: 4px; }
+.chart-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+#chart-svg { width: 100%; overflow: visible; }
+
+/* ══════════════════════════════════════════════
+   EMERGENCY CONTACTS
+══════════════════════════════════════════════ */
+.em-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 8px 0; }
+.em-card {
+  background: var(--cream3); border-radius: 14px; padding: 12px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-decoration: none; cursor: pointer; box-shadow: var(--sh);
+  transition: transform .12s; -webkit-tap-highlight-color: transparent;
+  border: 2px solid transparent; color: var(--ink);
+}
+.em-card:active { transform: scale(.96); }
+.em-card.police    { border-color: var(--navy); }
+.em-card.ambulance { border-color: var(--rose); }
+.em-card.hospital  { border-color: #0a7c3a; }
+.em-card.custom    { border-color: var(--line); }
+.em-icon { font-size: 1.6em; }
+.em-name { font-size: .7em; font-weight: 700; text-align: center; color: var(--ink2); }
+.em-num  { font-size: .82em; font-weight: 900; color: var(--rose-dk); }
+.em-add  {
+  background: transparent; border: 2px dashed var(--line);
+  border-radius: 14px; padding: 12px 8px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px; cursor: pointer;
+  color: var(--ink2); font-size: .72em; font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════
+   CHATBOT
+══════════════════════════════════════════════ */
+#chat-log {
+  display: flex; flex-direction: column; gap: 10px;
+  margin: 10px 0; min-height: 160px;
+}
+.bubble {
+  max-width: 82%; padding: 10px 14px; border-radius: 18px;
+  font-size: .93em; line-height: 1.45;
+}
+.bubble.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--rose-dk) 100%);
+  color: #fff; border-bottom-right-radius: 4px;
+}
+.bubble.bot {
+  align-self: flex-start;
+  background: var(--cream3); color: var(--ink);
+  border-bottom-left-radius: 4px; box-shadow: var(--sh);
+  border: 1px solid var(--line);
+}
+.chat-bar {
+  position: sticky; bottom: 0;
+  background: var(--cream); padding: 8px 0 4px;
+  display: flex; gap: 8px; align-items: flex-end;
+  border-top: 1px solid var(--line);
+}
+#chat-input {
+  flex: 1; min-height: 46px; max-height: 120px;
+  background: var(--cream3); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 14px;
+  padding: 10px 14px; font: inherit; resize: none;
+}
+#chat-input:focus { border-color: var(--rose); outline: none; }
+.chat-send, .chat-mic {
+  width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.15em;
+}
+.chat-send { background: var(--rose); color: #fff; }
+.chat-mic  { background: var(--navy); color: var(--ink-lt); }
+.chat-mic.recording { background: #dc2626; animation: pulse .8s infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.4)} 50%{box-shadow:0 0 0 8px rgba(220,38,38,0)} }
+
+/* ══════════════════════════════════════════════
+   MEDICINE RESULTS
+══════════════════════════════════════════════ */
+.match-card {
+  background: var(--navy); border-radius: var(--r2);
+  padding: 14px; margin: 8px 0;
+  border-left: 4px solid var(--rose);
+}
+.match-name { font-weight: 800; font-size: 1em; color: var(--ink-lt); }
+.match-unit { font-size: .8em; color: var(--ink-lt2); margin-bottom: 8px; }
+.price-row  { display: flex; gap: 10px; flex-wrap: wrap; }
+.price-box  {
+  flex: 1; min-width: 80px;
+  background: rgba(255,255,255,.08); border-radius: 10px; padding: 8px;
+  text-align: center;
+}
+.pb-label { font-size: .65em; font-weight: 700; text-transform: uppercase; color: var(--ink-lt2); }
+.pb-val   { font-size: 1.25em; font-weight: 900; color: var(--rose2); }
+.pb-val.save { color: #4ade80; }
+
+/* ══════════════════════════════════════════════
+   SETTINGS TOGGLES  (iOS-style, rose when active)
+══════════════════════════════════════════════ */
+.row {
+  display: flex; justify-content: space-between; align-items: center;
+  min-height: var(--tap); gap: 12px;
+}
+.row-label { color: var(--ink-lt); font-size: var(--fs); }
+.switch { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.track {
+  position: absolute; inset: 0; border-radius: 14px;
+  background: rgba(255,255,255,.2); cursor: pointer; transition: background .2s;
+}
+.switch input:checked + .track { background: var(--rose); }
+.track::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 50%; background: #fff;
+  transition: transform .2s; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+.switch input:checked + .track::after { transform: translateX(22px); }
+hr.divider { border: 0; border-top: 1px solid var(--line-dk); }
+
+/* ══════════════════════════════════════════════
+   HISTORY / PROGRESS
+══════════════════════════════════════════════ */
+.hist-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.hist-card:last-child { border-bottom: 0; }
+.hist-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--rose3); color: var(--rose-dk);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35em; flex-shrink: 0;
+}
+.hist-body { flex: 1; min-width: 0; }
+.hist-title { font-weight: 700; font-size: .93em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-sub   { font-size: .76em; color: var(--ink2); margin-top: 2px; }
+.pill {
+  display: inline-flex; align-items: center;
+  border-radius: 99px; padding: 2px 10px;
+  font-size: .7em; font-weight: 700; white-space: nowrap;
+}
+.pill.pending { background: var(--rose3); color: var(--rose-dk); }
+.pill.done    { background: var(--ok-bg); color: var(--ok); }
+
+/* ══════════════════════════════════════════════
+   STEP CHECKLIST
+══════════════════════════════════════════════ */
+.step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--line);
+  cursor: pointer; min-height: 48px;
+}
+.step:last-child { border-bottom: 0; }
+.step.done .step-text { text-decoration: line-through; color: var(--ink2); }
+.step-cb {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  border: 2px solid var(--line); background: var(--cream2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .85em; transition: all .15s;
+}
+.step.done .step-cb { background: var(--rose); border-color: var(--rose); color: #fff; }
+.step-text { font-size: .93em; color: var(--ink); }
+
+/* ══════════════════════════════════════════════
+   SAVINGS BANNER
+══════════════════════════════════════════════ */
+.savings-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--navy);
+  color: var(--ink-lt); border-radius: var(--r2); padding: 14px 16px; margin: 10px 0;
+  box-shadow: var(--sh-dk);
+}
+.sb-icon   { font-size: 1.8em; }
+.sb-amount { font-size: 1.5em; font-weight: 900; color: var(--rose2); }
+.sb-label  { font-size: .7em; opacity: .85; }
+
+/* ══════════════════════════════════════════════
+   SPINNER & MISC
+══════════════════════════════════════════════ */
+.spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 4px solid var(--rose3); border-top-color: var(--rose);
+  animation: spin .7s linear infinite; margin: 28px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.warn-box {
+  background: #fef3c7; border: 1.5px solid #d97706; border-radius: 10px;
+  padding: 10px 12px; font-size: .82em; color: #7c4a00; margin: 8px 0;
+}
+.orig-box {
+  white-space: pre-wrap; background: var(--cream2); border-radius: 10px;
+  padding: 12px; font-size: .8em; max-height: 200px; overflow: auto;
+  border: 1px solid var(--line); color: var(--ink2); margin-top: 8px;
+}
+
+/* TTS Tool */
+#tts-text {
+  width: 100%; min-height: 90px; border-radius: var(--r2);
+  border: 1.5px solid var(--line); background: var(--cream2);
+  color: var(--ink); font: inherit; padding: 10px 12px; resize: vertical;
+}
+#tts-text:focus { border-color: var(--rose); outline: none; }
+select.lang-sel {
+  background: var(--cream2); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: var(--r2);
+  font: inherit; padding: 8px 12px; width: 100%; min-height: 44px;
+}
+
+/* Fields */
+.field { margin: 10px 0; }
+.field label { display: block; font-size: .82em; font-weight: 700; color: var(--ink2); margin-bottom: 4px; }
+input[type=text], input[type=number] {
+  width: 100%; min-height: var(--tap); font: inherit;
+  padding: 0 14px; border-radius: var(--r2);
+  border: 1.5px solid var(--line); background: var(--cream2);
+  color: var(--ink); transition: border-color .15s;
+}
+input[type=text]:focus, input[type=number]:focus { border-color: var(--rose); outline: none; }
+
+/* Offline banner */
+#ob {
+  display: none; background: var(--rose-dk); color: #fff;
+  text-align: center; font-size: .8em; padding: 6px; z-index: 300;
+}
+
+/* Task chip */
+.task-chip {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--navy); border-radius: var(--r2);
+  padding: 12px 14px; margin: 10px 0; cursor: pointer;
+  box-shadow: var(--sh-dk); color: var(--ink-lt);
+}
+.tc-label { font-size: .7em; font-weight: 800; color: var(--rose2);
+  text-transform: uppercase; letter-spacing: .05em; }
+.tc-text  { font-size: .92em; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div id="ob">📡 Offline — AI features need internet</div>
+
+<!-- HEADER — cream bg, dark text, Shruti logo image -->
+<header id="hdr">
+  <div class="hdr-logo" onclick="go('home')" role="button" tabindex="0" aria-label="Home">
+    <img src="/shruti-logo.jpg" alt="Shruti logo" width="44" height="44">
+    <div>
+      <div class="brand-name">Shruti</div>
+      <div class="sub" id="sub-lang">हिन्दी</div>
+    </div>
+  </div>
+  <div class="hdr-acts">
+    <button class="icon-btn" id="spk-btn" title="Toggle voice" onclick="toggleListen()">🔊</button>
+    <button class="icon-btn" onclick="go('profile')" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<main id="app" aria-live="polite" role="main"></main>
+
+<nav id="nav" aria-label="Main navigation"></nav>
+
+<input type="file" id="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden>
+
+<script>
+/* ═══════════════════════════════════════════
+   TRANSLATIONS
+═══════════════════════════════════════════ */
+const T = {
+  en: {
+    home:"Home", chatbot:"Chatbot", tools:"Tools", history:"History", profile:"Settings",
+    greeting:"Namaste 🙏", sub_lang:"English",
+    today_task:"Pending Task", no_task:"All clear — great work! ✅",
+    scan:"Scan a Paper", scan_sub:"Forms, bills, notices, prescriptions",
+    med:"Check Medicine", med_sub:"Find generic price & save money",
+    em_title:"Emergency", police:"Police", ambulance:"Ambulance",
+    hospital:"Hospital", add_contact:"Add Contact",
+    activity_title:"7-Day Activity",
+    chat_placeholder:"Ask me anything…",
+    chat_disclaimer:"I am an AI helper, not a doctor or lawyer. Never share PIN or OTP.",
+    tts_title:"Read Aloud (Indian Languages)",
+    tts_placeholder:"Type or paste text here…",
+    tts_lang:"Select language",
+    tts_speak:"Speak 🔊", tts_stop:"Stop ⏹",
+    listen:"Listen", pause:"Pause",
+    orig:"Original text", ai_note:"AI-generated. Always verify the original.",
+    steps:"Action steps", back:"← Back",
+    share:"Share on WhatsApp",
+    help:"Need help?", help_txt:"Ask a family member or trusted person to review this with you.",
+    busy:"Reading your paper…", retry:"Try again",
+    none_docs:"No documents scanned yet.",
+    typed:"Medicine name", paid:"Price you paid (₹)", check:"Check price",
+    gen:"Generic price", save_lbl:"You can save", no_match:"Not found — check spelling.",
+    safe:"Price info only — not medical advice. Consult your doctor before changing medicines.",
+    lang_lbl:"Language", listen_lbl:"Listen first", large_lbl:"Large text", hc_lbl:"High contrast",
+    savings:"Total Saved", no_savings:"Check medicines to track savings.",
+    clear_data:"Delete my data",
+    form_soon:"Fill a form (coming soon)",
+    scan_pill:"Scan",
+    explain_btn:"Explain",
+    action_btn:"Action Steps",
+  },
+  hi: {
+    home:"होम", chatbot:"चैटबॉट", tools:"औज़ार", history:"इतिहास", profile:"सेटिंग्स",
+    greeting:"नमस्ते 🙏", sub_lang:"हिन्दी",
+    today_task:"अधूरा काम", no_task:"सभी काम पूरे हो गए! ✅",
+    scan:"काग़ज़ स्कैन करें", scan_sub:"फ़ॉर्म, बिल, नोटिस, पर्चा",
+    med:"दवा जाँचें", med_sub:"जेनेरिक क़ीमत जानें",
+    em_title:"आपातकाल", police:"पुलिस", ambulance:"एम्बुलेंस",
+    hospital:"अस्पताल", add_contact:"संपर्क जोड़ें",
+    activity_title:"7 दिन की गतिविधि",
+    chat_placeholder:"कुछ भी पूछें…",
+    chat_disclaimer:"मैं AI सहायक हूँ — डॉक्टर या वकील नहीं। PIN या OTP कभी न बताएं।",
+    tts_title:"भारतीय भाषा में पढ़ें",
+    tts_placeholder:"यहाँ लिखें या चिपकाएं…",
+    tts_lang:"भाषा चुनें",
+    tts_speak:"सुनें 🔊", tts_stop:"रोकें ⏹",
+    listen:"सुनें", pause:"रोकें",
+    orig:"मूल पाठ", ai_note:"AI द्वारा बनाई गई। मूल से मिलाकर देखें।",
+    steps:"क्या करना है", back:"← वापस",
+    share:"WhatsApp पर भेजें",
+    help:"मदद चाहिए?", help_txt:"किसी अपने या भरोसेमंद के साथ यह काग़ज़ देखें।",
+    busy:"काग़ज़ पढ़ रहे हैं…", retry:"फिर कोशिश करें",
+    none_docs:"अभी कोई काग़ज़ नहीं।",
+    typed:"दवा का नाम", paid:"आपने कितना दिया (₹)", check:"क़ीमत जाँचें",
+    gen:"जेनेरिक क़ीमत", save_lbl:"आप बचा सकते हैं", no_match:"नहीं मिली — नाम जाँचें।",
+    safe:"यह केवल क़ीमत की जानकारी है। बिना डॉक्टर की सलाह के दवा न बदलें।",
+    lang_lbl:"भाषा", listen_lbl:"पहले सुनें", large_lbl:"बड़े अक्षर", hc_lbl:"ज़्यादा कंट्रास्ट",
+    savings:"कुल बचत", no_savings:"दवा जाँचने पर बचत यहाँ दिखेगी।",
+    clear_data:"सारा डेटा मिटाएं",
+    form_soon:"फ़ॉर्म भरें (जल्द आ रहा है)",
+    scan_pill:"स्कैन",
+    explain_btn:"व्याख्या",
+    action_btn:"क्या करूँ",
+  }
+};
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const ld = (k,d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } };
+const sv = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+let S        = ld("settings", { lang:"hi", listen:true, large:false, contrast:false });
+let docs     = ld("docs", []);
+let chatHist = ld("chat", []);
+let emConts  = ld("em_contacts", []);
+let tab      = "home", view = null, cur = null;
+const t      = () => T[S.lang];
+
+const TABS = [
+  { k:"home",    icon:"🏠" },
+  { k:"chatbot", icon:"💬" },
+  { k:"tools",   icon:"🛠️" },
+  { k:"history", icon:"📋" },
+  { k:"profile", icon:"⚙️" },
+];
+
+/* ═══════════════════════════════════════════
+   ACCESSIBILITY
+═══════════════════════════════════════════ */
+function apply() {
+  document.body.classList.toggle("large",   S.large);
+  document.body.classList.toggle("hc",      S.contrast);
+  document.documentElement.lang = S.lang;
+  const sb = document.getElementById("spk-btn");
+  if (sb) sb.classList.toggle("muted", !S.listen);
+  document.getElementById("sub-lang").textContent = t().sub_lang;
+  sv("settings", S);
+}
+
+/* ═══════════════════════════════════════════
+   TTS
+═══════════════════════════════════════════ */
+function speak(txt, lc) {
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang = lc || (S.lang === "hi" ? "hi-IN" : "en-IN");
+  u.rate = 0.88;
+  speechSynthesis.speak(u);
+}
+function toggleListen() { S.listen = !S.listen; apply(); }
+const speakIf = txt => S.listen && speak(txt);
+const spkBtns = (txt, lc) => `
+  <div style="display:flex;gap:6px;margin-top:8px">
+    <button class="btn sm pill-rose" onclick='speak(${JSON.stringify(txt)},${JSON.stringify(lc||"")})'>🔊 ${t().listen}</button>
+    <button class="btn sm o" onclick="speechSynthesis.cancel()">${t().pause}</button>
+  </div>`;
+
+/* ═══════════════════════════════════════════
+   ACTIVITY LOG
+═══════════════════════════════════════════ */
+function logActivity(type) {
+  const today = new Date().toISOString().slice(0,10);
+  const act = ld("activity", {});
+  if (!act[today]) act[today] = { scans:0, meds:0 };
+  act[today][type] = (act[today][type] || 0) + 1;
+  sv("activity", act);
+}
+
+/* ═══════════════════════════════════════════
+   LINE CHART (SVG) — navy background version
+═══════════════════════════════════════════ */
+function buildChart() {
+  const act = ld("activity", {});
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const day = act[key] || { scans:0, meds:0 };
+    days.push({
+      scans: day.scans, meds: day.meds, total: day.scans + day.meds,
+      label: d.toLocaleDateString(S.lang==="hi"?"hi-IN":"en-IN", { weekday:"short" })
+    });
+  }
+  const W=300, H=100, PL=28, PR=10, PT=10, PB=26;
+  const IW=W-PL-PR, IH=H-PT-PB;
+  const maxV = Math.max(...days.map(d=>d.total), 1);
+  const xs = days.map((_,i) => PL+(i/6)*IW);
+  const yT = days.map(d => PT+IH-(d.total/maxV)*IH);
+  const yS = days.map(d => PT+IH-(d.scans/maxV)*IH);
+  const ptT = xs.map((x,i)=>`${x},${yT[i]}`).join(" ");
+  const ptS = xs.map((x,i)=>`${x},${yS[i]}`).join(" ");
+  const dots = days.map((d,i)=>`
+    <circle cx="${xs[i]}" cy="${yT[i]}" r="4" fill="#c08090"/>
+    <circle cx="${xs[i]}" cy="${yS[i]}" r="3" fill="#d4a0aa"/>`).join("");
+  const lbls = days.map((d,i)=>`<text x="${xs[i]}" y="${H-4}" text-anchor="middle" font-size="9" fill="#a0a8c8">${d.label}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible">
+    <polygon points="${PL},${PT+IH} ${ptT} ${PL+IW},${PT+IH}" fill="rgba(192,128,144,.18)"/>
+    <polyline points="${ptT}" fill="none" stroke="#c08090" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="${ptS}" fill="none" stroke="#d4a0aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4,3"/>
+    ${dots}${lbls}
+  </svg>`;
+}
+
+/* ═══════════════════════════════════════════
+   IMAGE HELPERS
+═══════════════════════════════════════════ */
+function compress(file) {
+  return new Promise(r => {
+    const i = new Image();
+    i.onload = () => {
+      const s = Math.min(1, 1400/Math.max(i.width,i.height));
+      const c = document.createElement("canvas");
+      c.width = i.width*s; c.height = i.height*s;
+      c.getContext("2d").drawImage(i,0,0,c.width,c.height);
+      r(c.toDataURL("image/jpeg",.8).split(",")[1]);
+    };
+    i.src = URL.createObjectURL(file);
+  });
+}
+function pick(cb) {
+  const f = document.getElementById("file");
+  f.value = "";
+  f.onchange = async () => f.files[0] && cb(await compress(f.files[0]));
+  f.click();
+}
+
+/* ═══════════════════════════════════════════
+   API
+═══════════════════════════════════════════ */
+async function post(url, body) {
+  const r = await fetch(url, {
+    method:"POST", headers:{"content-type":"application/json"},
+    body: JSON.stringify(body)
+  });
+  let d; try { d = await r.json(); } catch { throw new Error(`HTTP ${r.status}`); }
+  if (!r.ok) {
+    const m = typeof d?.error==="object" ? d.error?.message : (d?.error||d?.message||`Error ${r.status}`);
+    throw new Error(m);
+  }
+  return d;
+}
+
+/* ═══════════════════════════════════════════
+   SCAN PAPER
+═══════════════════════════════════════════ */
+function scan() {
+  pick(async img => {
+    view = "busy"; render(); speakIf(t().busy); logActivity("scans");
+    try {
+      const d = await post("/api/explain", { image:img, lang:S.lang==="hi"?"Hindi":"English" });
+      if (!d.quality_ok) { view="err"; cur=d.quality_reason||"Photo unclear"; return render(); }
+      d.id = Date.now(); d.checked = []; d.steps = Array.isArray(d.steps) ? d.steps : [];
+      docs.unshift(d); sv("docs", docs);
+      cur = d; view = "result"; render();
+      if (S.listen && d.summary) speak(d.summary);
+    } catch(e) { view="err"; cur=e.message; render(); }
+  });
+}
+
+/* ═══════════════════════════════════════════
+   MEDICINE
+═══════════════════════════════════════════ */
+function medPhoto() { pick(img => medGo(img)); }
+async function medGo(img) {
+  const mr = document.getElementById("mr");
+  if (mr) mr.innerHTML = '<div class="spinner"></div>';
+  logActivity("meds");
+  try {
+    const d = await post("/api/medlens", {
+      image: img,
+      name:  document.getElementById("mn")?.value || "",
+      paid:  document.getElementById("mp")?.value || ""
+    });
+    const mt = Array.isArray(d.matches) ? d.matches : [];
+    const saved = mt.reduce((a,m) => a + (parseFloat(m.difference)||0), 0);
+    if (saved > 0) { const p = ld("savings",0); sv("savings", Math.max(0, p+saved)); }
+    if (!mr) return;
+    mr.innerHTML = (d.read_name ? `<p style="font-size:.82em;color:var(--ink-lt2);margin:4px 0">📋 ${d.read_name}</p>` : "") +
+      (mt.length
+        ? mt.map(m => `<div class="match-card">
+            <div class="match-name">${m.name}</div>
+            <div class="match-unit">${m.unit||""}</div>
+            <div class="price-row">
+              <div class="price-box"><div class="pb-label">${t().gen}</div><div class="pb-val">₹${m.price}</div></div>
+              ${d.paid ? `<div class="price-box"><div class="pb-label">${t().save_lbl}</div><div class="pb-val save">₹${Math.max(0,m.difference||0)}</div></div>` : ""}
+            </div>
+            ${spkBtns(`${m.name}. ${t().gen} ${m.price} रुपये`)}
+          </div>`).join("")
+        : `<p style="color:var(--ink2);font-size:.88em">${t().no_match}</p>`);
+  } catch(e) {
+    if (mr) mr.innerHTML = `<p style="color:var(--err)">${e.message}</p>`;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   STEPS
+═══════════════════════════════════════════ */
+function toggleStep(id, i) {
+  const d = docs.find(x => x.id===id); if (!d) return;
+  d.checked = d.checked || [];
+  d.checked = d.checked.includes(i) ? d.checked.filter(x=>x!==i) : [...d.checked,i];
+  sv("docs", docs); render();
+}
+function shareDoc(id) {
+  const d = docs.find(x => x.id===id); if (!d) return;
+  const st = Array.isArray(d.steps) ? d.steps : [];
+  const m = `${d.summary||""}\n\n${t().steps}:\n` + st.map((s,i)=>`${i+1}. ${s.text||""}`).join("\n");
+  window.open("https://wa.me/?text="+encodeURIComponent(m));
+}
+
+/* ═══════════════════════════════════════════
+   CHATBOT
+═══════════════════════════════════════════ */
+async function chatSend() {
+  const inp = document.getElementById("chat-input");
+  const msg = (inp?.value||"").trim(); if (!msg) return;
+  inp.value = "";
+  chatHist.push({ role:"user", content:msg }); sv("chat", chatHist);
+  renderChatLog();
+  try {
+    const d = await post("/api/chat", { message:msg, history:chatHist.slice(-10), lang:S.lang==="hi"?"Hindi":"English" });
+    chatHist.push({ role:"assistant", content:d.reply||"…" });
+    sv("chat", chatHist);
+    if (S.listen && d.reply) speak(d.reply);
+  } catch(e) {
+    chatHist.push({ role:"assistant", content:`⚠ ${e.message}` });
+    sv("chat", chatHist);
+  }
+  renderChatLog();
+  setTimeout(() => { const l=document.getElementById("chat-log"); if(l) l.scrollTop=l.scrollHeight; }, 50);
+}
+function chatKeydown(e) { if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); chatSend(); } }
+function renderChatLog() {
+  const log = document.getElementById("chat-log"); if (!log) return;
+  log.innerHTML = chatHist.map(m =>
+    `<div class="bubble ${m.role==="user"?"user":"bot"}">${m.content.replace(/</g,"&lt;")}</div>`
+  ).join("") || `<p style="color:var(--ink2);text-align:center;padding:24px;font-size:.88em">${t().chat_placeholder}</p>`;
+}
+function startMic(inputId, lc) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert("Speech recognition not supported."); return; }
+  const r = new SR(); r.lang = lc || (S.lang==="hi"?"hi-IN":"en-IN"); r.interimResults = false;
+  const btn = document.getElementById("mic-btn");
+  if (btn) btn.classList.add("recording");
+  r.onresult = e => { const el=document.getElementById(inputId); if(el) el.value=e.results[0][0].transcript; };
+  r.onend = () => { if(btn) btn.classList.remove("recording"); };
+  r.onerror = () => { if(btn) btn.classList.remove("recording"); };
+  r.start();
+}
+
+/* ═══════════════════════════════════════════
+   TTS TOOL
+═══════════════════════════════════════════ */
+const INDIAN_LANGS = [
+  ["hi-IN","हिन्दी"],["bn-IN","বাংলা"],["ta-IN","தமிழ்"],
+  ["te-IN","తెలుగు"],["mr-IN","मराठी"],["gu-IN","ગુજરાતી"],
+  ["kn-IN","ಕನ್ನಡ"],["ml-IN","മലയാളം"],["pa-IN","ਪੰਜਾਬੀ"],
+  ["ur-PK","اردو"],["en-IN","English (India)"]
+];
+function ttsSpeak() {
+  const txt = document.getElementById("tts-text")?.value?.trim();
+  const lc  = document.getElementById("tts-lang-sel")?.value||"hi-IN";
+  if (!txt) return;
+  speak(txt, lc);
+}
+
+/* ═══════════════════════════════════════════
+   EMERGENCY
+═══════════════════════════════════════════ */
+function addEmContact() {
+  const name = prompt(S.lang==="hi"?"संपर्क का नाम:":"Contact name:"); if (!name) return;
+  const num  = prompt(S.lang==="hi"?"फ़ोन नंबर:":"Phone number:");   if (!num)  return;
+  emConts.push({ name, num }); sv("em_contacts", emConts); render();
+}
+function removeEmContact(i) {
+  if (!confirm(S.lang==="hi"?"हटाएं?":"Remove?")) return;
+  emConts.splice(i,1); sv("em_contacts", emConts); render();
+}
+
+/* ═══════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════ */
+function renderEmergency() {
+  const x = t();
+  return `
+    <div class="sec"><h2>🚨 ${x.em_title}</h2></div>
+    <div class="em-grid">
+      <a href="tel:100" class="em-card police">
+        <div class="em-icon">🚔</div>
+        <div class="em-name">${x.police}</div>
+        <div class="em-num">100</div>
+      </a>
+      <a href="tel:108" class="em-card ambulance">
+        <div class="em-icon">🚑</div>
+        <div class="em-name">${x.ambulance}</div>
+        <div class="em-num">108</div>
+      </a>
+      <a href="tel:102" class="em-card hospital">
+        <div class="em-icon">🏥</div>
+        <div class="em-name">${x.hospital}</div>
+        <div class="em-num">102</div>
+      </a>
+      ${emConts.map((c,i)=>`
+        <a href="tel:${c.num}" class="em-card custom">
+          <div class="em-icon">👤</div>
+          <div class="em-name">${c.name}</div>
+          <div class="em-num">${c.num}</div>
+        </a>`).join("")}
+      <button class="em-add" onclick="addEmContact()">
+        <span style="font-size:1.4em">＋</span><span>${x.add_contact}</span>
+      </button>
+    </div>`;
+}
+
+function renderResult(d) {
+  const st = Array.isArray(d.steps) ? d.steps : [];
+  const ch = Array.isArray(d.checked) ? d.checked : [];
+  const lc = Array.isArray(d.low_confidence) ? d.low_confidence : [];
+  const done = ch.length >= st.length && st.length > 0;
+  return `
+    <button class="btn o" style="margin-top:12px"  onclick="go('home')">${t().back}</button>
+    <div class="card" style="margin-top:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b>${d.doc_type||"Document"}</b>
+        <span class="pill ${done?"done":"pending"}">${ch.length}/${st.length} ✓</span>
+      </div>
+      <p style="font-size:.93em">${d.summary||""}</p>
+      ${spkBtns(d.summary||"")}
+      <p style="font-size:.76em;color:var(--ink2);margin-top:8px">${t().ai_note}</p>
+      ${lc.length?`<div class="warn-box">⚠ ${lc.join(", ")}</div>`:""}
+    </div>
+    ${st.length?`<div class="card">
+      <b>${t().steps}</b>
+      ${st.map((s,i)=>`
+        <div class="step ${ch.includes(i)?"done":""}" onclick="toggleStep(${d.id},${i})">
+          <div class="step-cb">${ch.includes(i)?"✓":""}</div>
+          <div class="step-text">${s.text||""}${s.deadline?` <b>📅 ${s.deadline}</b>`:""}</div>
+        </div>`).join("")}
+    </div>`:""}
+    <div class="card">
+      <b>${t().orig}</b>
+      <div class="orig-box">${(d.original_text||"").replace(/</g,"&lt;")}</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 20px">
+      <button class="btn pill-rose" onclick="shareDoc(${d.id})">📤 ${t().share}</button>
+      <button class="btn o" onclick="go('profile')">🤝 ${t().help}</button>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   TAB RENDERERS
+═══════════════════════════════════════════ */
+function renderHome() {
+  const x = t();
+  const open = docs.find(d => d.checked.length < d.steps.length && d.steps.length > 0);
+  const nextStep = open ? open.steps.find((_,i) => !open.checked.includes(i)) : null;
+  const totalSaved = ld("savings", 0);
+
+  return `
+    <h2 class="page">${x.greeting}</h2>
+
+    ${nextStep
+      ? `<div class="task-chip" onclick="cur=docs.find(d=>d.id===${open.id});view='result';render()" role="button" tabindex="0">
+           <div style="font-size:1.5em">📋</div>
+           <div><div class="tc-label">${x.today_task}</div><div class="tc-text">${nextStep.text||""}</div></div>
+           <div style="margin-left:auto;color:var(--rose2);font-size:1.3em">›</div>
+         </div>`
+      : `<div style="background:var(--ok-bg);border:1.5px solid var(--ok);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin:10px 0">
+           <span style="font-size:1.3em">✅</span>
+           <span style="font-size:.9em;color:var(--ok)">${x.no_task}</span>
+         </div>`}
+
+    ${totalSaved > 0
+      ? `<div class="savings-banner">
+           <div class="sb-icon">💰</div>
+           <div><div class="sb-label">${x.savings}</div><div class="sb-amount">₹${totalSaved.toFixed(0)}</div></div>
+         </div>`
+      : ""}
+
+    <!-- Activity graph (dark navy card matching UI) -->
+    <div class="chart-wrap">
+      <div class="chart-title">📈 ${x.activity_title}</div>
+      ${buildChart()}
+      <div class="chart-legend">
+        <span><span class="dot" style="background:var(--rose)"></span> Total</span>
+        <span><span class="dot" style="background:var(--rose2)"></span> Scans</span>
+      </div>
+    </div>
+
+    <!-- Action cards -->
+    <div class="sec"><h2>🛠 ${x.tools}</h2></div>
+    <div class="action-grid">
+      <div class="action-card dk" onclick="scan()" role="button" tabindex="0">
+        <div class="ac-icon">📷</div>
+        <div class="ac-title">${x.scan}</div>
+        <div class="ac-sub">${x.scan_sub}</div>
+      </div>
+      <div class="action-card rose-card" onclick="go('tools')" role="button" tabindex="0">
+        <div class="ac-icon">💊</div>
+        <div class="ac-title">${x.med}</div>
+        <div class="ac-sub">${x.med_sub}</div>
+      </div>
+    </div>
+
+    ${renderEmergency()}
+
+    ${docs.length ? `
+      <div class="sec"><h2>📂 Recent</h2><a onclick="go('history')">See all ›</a></div>
+      <div class="card" style="padding:0 16px">
+        ${docs.slice(0,3).map(d => `
+          <div class="hist-card" onclick="cur=docs.find(z=>z.id===${d.id});view='result';render()">
+            <div class="hist-icon">📄</div>
+            <div class="hist-body">
+              <div class="hist-title">${d.doc_type||"Document"}</div>
+              <div class="hist-sub">${(d.summary||"").slice(0,60)}…</div>
+            </div>
+            <span class="pill ${d.checked.length>=d.steps.length&&d.steps.length>0?"done":"pending"}">${d.checked.length}/${d.steps.length}</span>
+          </div>`).join("")}
+      </div>` : ""}`;
+}
+
+function renderChatbotPage() {
+  const x = t();
+  return `
+    <h2 class="page">💬 ${x.chatbot}</h2>
+    <div class="card rose" style="margin-bottom:4px">
+      <p style="font-size:.8em">⚠ ${x.chat_disclaimer}</p>
+    </div>
+    <div id="chat-log" style="max-height:52vh;overflow-y:auto;padding-bottom:4px"></div>
+    <div class="chat-bar">
+      <textarea id="chat-input" placeholder="${x.chat_placeholder}"
+        onkeydown="chatKeydown(event)" rows="1" style="min-height:46px;overflow-y:auto"></textarea>
+      <button class="chat-mic" id="mic-btn" onclick="startMic('chat-input')">🎤</button>
+      <button class="chat-send" onclick="chatSend()">➤</button>
+    </div>`;
+}
+
+function renderToolsPage() {
+  const x = t();
+  return `
+    <h2 class="page">🛠 ${x.tools}</h2>
+
+    <!-- Scan & Explain — matches reference UI card style -->
+    <div class="card dk">
+      <div style="font-weight:800;font-size:1em;color:var(--ink-lt);margin-bottom:4px">📷 ${x.scan}</div>
+      <p style="font-size:.84em;color:var(--ink-lt2);margin-bottom:10px">${x.scan_sub}</p>
+      <!-- Rose-gold orb button like reference -->
+      <button class="scan-orb" onclick="scan()">📷<span>${x.scan_pill}</span></button>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px">
+        <button class="btn pill-rose" onclick="scan()">🔍 ${x.explain_btn}</button>
+        <button class="btn pill-rose" onclick="scan()">📋 ${x.action_btn}</button>
+      </div>
+    </div>
+
+    <!-- Medicine Check -->
+    <div class="card">
+      <div style="font-weight:800;margin-bottom:8px">💊 ${x.med}</div>
+      <button class="btn full pill-rose" onclick="medPhoto()">📷 ${x.scan}</button>
+      <div style="margin:10px 0;text-align:center;color:var(--ink2);font-size:.82em">— or type below —</div>
+      <div class="field"><label>${x.typed}</label><input type="text" id="mn" placeholder="${x.typed}…"></div>
+      <div class="field"><label>${x.paid}</label><input type="number" inputmode="decimal" id="mp" placeholder="0"></div>
+      <button class="btn full" style="margin-top:6px" onclick="medGo()">🔍 ${x.check}</button>
+      <div id="mr" style="margin-top:12px"></div>
+      <div class="warn-box" style="margin-top:10px">${x.safe}</div>
+    </div>
+
+    <!-- Indian Language TTS -->
+    <div class="card">
+      <div style="font-weight:800;margin-bottom:10px">🔊 ${x.tts_title}</div>
+      <div class="field">
+        <label>${x.tts_lang}</label>
+        <select class="lang-sel" id="tts-lang-sel">
+          ${INDIAN_LANGS.map(([c,l])=>`<option value="${c}" ${c==="hi-IN"&&S.lang==="hi"?"selected":""}>${l}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field">
+        <label>${x.tts_placeholder}</label>
+        <textarea id="tts-text" placeholder="${x.tts_placeholder}"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn pill-rose" onclick="ttsSpeak()">🔊 ${x.tts_speak}</button>
+        <button class="btn o" onclick="speechSynthesis.cancel()">⏹ ${x.tts_stop}</button>
+        <button class="btn dk o" onclick="startMic('tts-text',document.getElementById('tts-lang-sel')?.value)">🎤 Mic</button>
+      </div>
+    </div>
+
+    <!-- Coming soon -->
+    <div class="card" style="opacity:.5;border:2px dashed var(--line);background:transparent;color:var(--ink2)">
+      <p>📋 ${x.form_soon}</p>
+    </div>`;
+}
+
+function renderHistoryPage() {
+  const x = t();
+  const totalSaved = ld("savings", 0);
+  return `
+    <h2 class="page">📋 ${x.history}</h2>
+    ${totalSaved > 0
+      ? `<div class="savings-banner">
+           <div class="sb-icon">💰</div>
+           <div><div class="sb-label">${x.savings}</div><div class="sb-amount">₹${totalSaved.toFixed(0)}</div></div>
+         </div>`
+      : `<p style="color:var(--ink2);font-size:.88em;margin:6px 0 10px">${x.no_savings}</p>`}
+    <div class="card" style="${docs.length?"padding:0 16px":""}">
+      ${docs.length
+        ? docs.map(d=>`
+            <div class="hist-card" onclick="cur=docs.find(z=>z.id===${d.id});view='result';render()">
+              <div class="hist-icon">📄</div>
+              <div class="hist-body">
+                <div class="hist-title">${d.doc_type||"Document"}</div>
+                <div class="hist-sub">${(d.summary||"").slice(0,80)}…</div>
+              </div>
+              <span class="pill ${d.checked.length>=d.steps.length&&d.steps.length>0?"done":"pending"}">${d.checked.length}/${d.steps.length}</span>
+            </div>`).join("")
+        : `<p style="color:var(--ink2);padding:16px">${x.none_docs}</p>`}
+    </div>`;
+}
+
+function renderProfilePage() {
+  const x = t();
+  const mkSw = (key, lbl) => `
+    <label class="row">
+      <span class="row-label" style="color:var(--ink-lt)">${lbl}</span>
+      <label class="switch">
+        <input type="checkbox" ${S[key]?"checked":""} onchange="S['${key}']=this.checked;apply();render()">
+        <span class="track"></span>
+      </label>
+    </label>
+    <hr class="divider">`;
+  return `
+    <h2 class="page">⚙️ ${x.profile}</h2>
+    <!-- Settings card in dark navy matching UI reference -->
+    <div class="card dk">
+      <label class="row">
+        <span class="row-label">${x.lang_lbl}</span>
+        <select onchange="S.lang=this.value;apply();render()"
+          style="background:rgba(255,255,255,.12);color:var(--ink-lt);border:1px solid var(--line-dk);border-radius:var(--r2);padding:6px 10px;font:inherit">
+          <option value="hi" ${S.lang==="hi"?"selected":""}>हिन्दी</option>
+          <option value="en" ${S.lang==="en"?"selected":""}>English</option>
+        </select>
+      </label>
+      <hr class="divider">
+      ${mkSw("listen","🔊 " + x.listen_lbl)}
+      ${mkSw("large", "A⁺ " + x.large_lbl)}
+      ${mkSw("contrast","◑ " + x.hc_lbl)}
+    </div>
+    <!-- Emergency contacts -->
+    <div class="card">
+      <b>🚨 ${x.em_title}</b>
+      ${emConts.map((c,i)=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)">
+          <div><div style="font-weight:700">${c.name}</div><div style="font-size:.82em;color:var(--ink2)">${c.num}</div></div>
+          <button class="btn sm o" style="border-color:var(--err);color:var(--err)" onclick="removeEmContact(${i})">✕</button>
+        </div>`).join("")}
+      <button class="btn full" style="margin-top:10px" onclick="addEmContact()">＋ ${x.add_contact}</button>
+    </div>
+    <div class="card amber">
+      <b>🤝 ${x.help}</b>
+      <p style="margin-top:4px;font-size:.88em">${x.help_txt}</p>
+    </div>
+    <button class="btn o" style="margin:8px 0 20px;border-color:var(--err);color:var(--err)"
+      onclick="if(confirm('${x.clear_data}?')){localStorage.clear();location.reload()}">
+      🗑 ${x.clear_data}
+    </button>`;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+function renderNav() {
+  document.getElementById("nav").innerHTML = TABS.map(m => {
+    const label = t()[m.k];
+    const on = tab === m.k && !view;
+    return `<button class="${on?"on":""}" onclick="go('${m.k}')" ${on?'aria-current="page"':""}>
+      ${on
+        ? `<div class="ni-wrap"><div class="ni">${m.icon}</div>${label}</div>`
+        : `<div class="ni">${m.icon}</div>${label}`}
+    </button>`;
+  }).join("");
+}
+
+function go(k) { tab = k; view = null; render(); }
+
+/* ═══════════════════════════════════════════
+   MAIN RENDER
+═══════════════════════════════════════════ */
+function render() {
+  renderNav();
+  const app = document.getElementById("app");
+
+  if (view === "busy") {
+    app.innerHTML = `<div style="text-align:center;padding:40px">
+      <div class="spinner"></div>
+      <p style="color:var(--ink2)">${t().busy}</p></div>`;
+    return;
+  }
+  if (view === "err") {
+    app.innerHTML = `<div class="card err" style="margin-top:16px">
+      <p>⚠ ${cur}</p>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn pill-rose" onclick="scan()">${t().retry}</button>
+        <button class="btn o" onclick="go('profile')">🤝 ${t().help}</button>
+      </div></div>`;
+    return;
+  }
+  if (view === "result") { app.innerHTML = renderResult(cur); return; }
+
+  if (tab === "home")    app.innerHTML = renderHome();
+  else if (tab === "chatbot") {
+    app.innerHTML = renderChatbotPage();
+    renderChatLog();
+    setTimeout(() => { const l=document.getElementById("chat-log"); if(l) l.scrollTop=l.scrollHeight; }, 50);
+  }
+  else if (tab === "tools")   app.innerHTML = renderToolsPage();
+  else if (tab === "history") app.innerHTML = renderHistoryPage();
+  else if (tab === "profile") app.innerHTML = renderProfilePage();
+
+  apply();
+}
+
+/* ═══════════════════════════════════════════
+   OFFLINE
+═══════════════════════════════════════════ */
+const ob = document.getElementById("ob");
+const checkOnline = () => { ob.style.display = navigator.onLine ? "none" : "block"; };
+window.addEventListener("online", checkOnline);
+window.addEventListener("offline", checkOnline);
+checkOnline();
+
+/* ═══════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════ */
+apply();
+render();
+</script>
+</body>
+</html>

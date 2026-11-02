@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 500" width="440" height="500">
+  <defs>
+    <!-- Background -->
+    <radialGradient id="bg" cx="50%" cy="45%" r="55%">
+      <stop offset="0%"   stop-color="#2a1020"/>
+      <stop offset="100%" stop-color="#100810"/>
+    </radialGradient>
+
+    <!-- Main metallic — Burgundy rose-gold (matches Shruti's copper but in brand palette) -->
+    <linearGradient id="m1" x1="10%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%"   stop-color="#f4c0cc"/>
+      <stop offset="18%"  stop-color="#d96080"/>
+      <stop offset="42%"  stop-color="#9e2347"/>
+      <stop offset="68%"  stop-color="#7D1535"/>
+      <stop offset="88%"  stop-color="#5a0e22"/>
+      <stop offset="100%" stop-color="#3a0810"/>
+    </linearGradient>
+
+    <!-- Secondary metallic (lower arm, slightly cooler) -->
+    <linearGradient id="m2" x1="90%" y1="5%" x2="10%" y2="95%">
+      <stop offset="0%"   stop-color="#f0b8c8"/>
+      <stop offset="20%"  stop-color="#c85070"/>
+      <stop offset="50%"  stop-color="#8c1e3a"/>
+      <stop offset="80%"  stop-color="#6a1028"/>
+      <stop offset="100%" stop-color="#400c18"/>
+    </linearGradient>
+
+    <!-- Sound bars -->
+    <linearGradient id="bar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#fce8ec"/>
+      <stop offset="50%"  stop-color="#e8a8b8"/>
+      <stop offset="100%" stop-color="#c87090"/>
+    </linearGradient>
+
+    <!-- Wordmark gradient -->
+    <linearGradient id="wm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#f4c0cc"/>
+      <stop offset="22%"  stop-color="#d06080"/>
+      <stop offset="50%"  stop-color="#9e2347"/>
+      <stop offset="78%"  stop-color="#d06080"/>
+      <stop offset="100%" stop-color="#f4c0cc"/>
+    </linearGradient>
+
+    <!-- Glow / shadow -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="7" flood-color="#9e2347" flood-opacity="0.45"/>
+    </filter>
+    <filter id="txt-sh" x="-10%" y="-20%" width="120%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="4" flood-color="#3a0810" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+
+  <!-- Dark background pill -->
+  <rect width="440" height="500" rx="44" fill="url(#bg)"/>
+
+  <!-- ── SYMBOL ─────────────────────────────────────────── -->
+
+  <!-- Upper arm of S  (thick ribbon curving from lower-left → upper-right with inward tail) -->
+  <path
+    d="M 138,218
+       C 106,214  84,190  88,160
+       C  92,130 118,110 152,106
+       C 186,102 218,118 226,146
+       C 232,166 222,182 205,192"
+    fill="none"
+    stroke="url(#m1)"
+    stroke-width="48"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#glow)"
+  />
+
+  <!-- Lower arm of S  (thick ribbon curving from upper-right → lower-left with inward tail) -->
+  <path
+    d="M 302,276
+       C 334,282 356,306 352,336
+       C 348,366 322,388 288,392
+       C 254,396 222,380 214,350
+       C 208,330 218,314 235,304"
+    fill="none"
+    stroke="url(#m2)"
+    stroke-width="48"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#glow)"
+  />
+
+  <!-- ── SOUND WAVE BARS (center cross of S) ──────────────────── -->
+  <rect x="196" y="200" width="12" height="38"  rx="6" fill="url(#bar)" filter="url(#glow)"/>
+  <rect x="212" y="190" width="12" height="58"  rx="6" fill="url(#bar)" filter="url(#glow)"/>
+  <rect x="228" y="196" width="12" height="46"  rx="6" fill="url(#bar)" filter="url(#glow)"/>
+
+  <!-- ── SPARKLE / ACCENT MARKS  (top-right of upper curl) ──── -->
+  <!-- Thick accent dash 1 -->
+  <ellipse cx="268" cy="126" rx="18" ry="9"
+    fill="url(#m1)" transform="rotate(-38 268 126)" filter="url(#glow)"/>
+  <!-- Thin accent dash 2 -->
+  <ellipse cx="292" cy="100" rx="11" ry="5.5"
+    fill="url(#m2)" transform="rotate(-32 292 100)" filter="url(#glow)"/>
+
+  <!-- ── WORDMARK ─────────────────────────────────────────── -->
+  <text
+    x="220" y="460"
+    text-anchor="middle"
+    font-family="Georgia, 'Palatino Linotype', 'Book Antiqua', serif"
+    font-size="74"
+    font-weight="700"
+    letter-spacing="3"
+    fill="url(#wm)"
+    filter="url(#txt-sh)"
+  >Sahayak</text>
+
+  <!-- Subtle rule under wordmark -->
+  <line x1="90" y1="476" x2="350" y2="476"
+    stroke="url(#wm)" stroke-width="1.2" opacity="0.45"/>
+</svg>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80">
+  <defs>
+    <linearGradient id="m1" x1="10%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%"  stop-color="#f4c0cc"/>
+      <stop offset="30%" stop-color="#9e2347"/>
+      <stop offset="70%" stop-color="#7D1535"/>
+      <stop offset="100%" stop-color="#3a0810"/>
+    </linearGradient>
+    <linearGradient id="m2" x1="90%" y1="5%" x2="10%" y2="95%">
+      <stop offset="0%"  stop-color="#f0b8c8"/>
+      <stop offset="50%" stop-color="#8c1e3a"/>
+      <stop offset="100%" stop-color="#400c18"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#fce8ec"/>
+      <stop offset="100%" stop-color="#c87090"/>
+    </linearGradient>
+    <filter id="g">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#9e2347" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <!-- Upper S arm -->
+  <path d="M 25,42 C 18,40 14,34 15,26 C 16,18 23,13 32,12 C 41,11 49,16 51,24 C 53,30 50,35 45,38"
+    fill="none" stroke="url(#m1)" stroke-width="10" stroke-linecap="round" filter="url(#g)"/>
+  <!-- Lower S arm -->
+  <path d="M 55,48 C 62,50 66,56 65,64 C 64,72 57,77 48,78 C 39,79 31,74 29,66 C 27,60 30,55 35,52"
+    fill="none" stroke="url(#m2)" stroke-width="10" stroke-linecap="round" filter="url(#g)"/>
+  <!-- Sound bars -->
+  <rect x="36" y="36" width="3" height="10" rx="1.5" fill="url(#bar)"/>
+  <rect x="41" y="33" width="3" height="16" rx="1.5" fill="url(#bar)"/>
+  <rect x="46" y="35" width="3" height="12" rx="1.5" fill="url(#bar)"/>
+  <!-- Sparkles -->
+  <ellipse cx="56" cy="18" rx="5" ry="2.5" fill="url(#m1)" transform="rotate(-35 56 18)"/>
+  <ellipse cx="63" cy="11" rx="3" ry="1.5" fill="url(#m2)" transform="rotate(-30 63 11)"/>
+</svg>
+
