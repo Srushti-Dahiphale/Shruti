@@ -1,0 +1,6 @@
+#!/Users/yashdahiphale/Downloads/sahayak/freellmpool-venv/bin/python
+import sys
+from freellmpool.cli import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())
