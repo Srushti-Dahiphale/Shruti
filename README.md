@@ -1,4 +1,4 @@
-# Sahayak (Prototype)
+# Shruti (Prototype)
 
 Scan → Understand → Act. Helps users understand paperwork and check medicine prices against the Jan Aushadhi (PMBJP) generic database.
 
